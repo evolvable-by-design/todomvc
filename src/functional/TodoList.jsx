@@ -1,46 +1,22 @@
-import React, { useMemo, useEffect, useState } from 'react'
-import { NavLink, useParams } from 'react-router-dom'
+import React from 'react'
+import { NavLink } from 'react-router-dom'
 
-import TodoList from '../commons/models/todo-list'
+import TodoList from '../commons/TodoList'
 import TodoInput from './TodoInput'
 import TodoItem from './TodoItem'
-import getTodoController from '../commons/controllers/getTodoController'
 
-export default function TodoListComponent () {
-  const [todoController] = useState(getTodoController())
-
-  const [todos, setTodos] = useState(todoController.getTodos())
-  const { filter } = useParams()
-
-  const todosToDisplay = useMemo(() => todos.withStatus(filter), [
-    todos,
-    filter
-  ])
-
-  const left = TodoList.countTodosLeft(todosToDisplay)
-  const isAnyDone = left < todosToDisplay.length
-  const areAllDone = left === todosToDisplay.length
-
-  useEffect(() => {
-    todoController.fetch().then(setTodos)
-  }, [])
-
-  const createTodo = title =>
-    todoController.add(title).then(({ allTodos }) => setTodos(allTodos))
-  const deleteTodo = id => todoController.delete(id).then(setTodos)
-  const clearCompletedTodos = () =>
-    todoController.deleteMany('completed').then(setTodos)
-  const switchStatusOfAllTodos = () =>
-    todoController.switchStatusOfAllTodos().then(setTodos)
-  const updateTodoTitle = (todo, newTitle) => {
-    const newValue = todo.updateTitle(newTitle)
-    todoController.updateTodo(newValue).then(setTodos)
-  }
-  const switchTodoCompletedStatus = todo => {
-    const newValue =
-      todo.completed === true ? todo.uncomplete() : todo.complete()
-    todoController.updateTodo(newValue).then(setTodos)
-  }
+export default function TodoListComponent ({
+  todos,
+  createTodo,
+  deleteTodo,
+  clearCompletedTodos,
+  switchStatusOfAllTodos,
+  updateTodoTitle,
+  switchTodoCompletedStatus
+}) {
+  const left = TodoList.countTodosLeft(todos)
+  const isAnyDone = left < todos.length
+  const areAllDone = left === todos.length
 
   return (
     <React.Fragment>
@@ -59,7 +35,7 @@ export default function TodoListComponent () {
         />
         <label htmlFor='toggle-all' />
         <ul className='todo-list'>
-          {todosToDisplay.map(todo => {
+          {todos.map(todo => {
             return (
               <TodoItem
                 key={todo.id}

@@ -1,20 +1,14 @@
-# TODOMVC
+# TODOMVC Frontends
 
-Here, on the frontend, I propose to highlight the differences between using [React](https://github.com/facebook/react) with the imperative and functional paradigms. As [React](https://github.com/facebook/react) is a vue library, this difference is visible only in the vue layer.
+Here I propose to highlight the differences between using [React](https://github.com/facebook/react) with the imperative and functional paradigms. As [React](https://github.com/facebook/react) is a vue library, this difference is visible only in the vue layer.
 
 Within the imperative paradigm, classes are used. On the ohter hand, within the functional paradigm, the React hooks are used.
 
-In addition, I propose a REST API to enable the design of new versions of TODOMVC that use a backend.
-In my opinion, it could be a nice addition to TODOMVC in order to help developers learn how to use a REST API within a MVC frontend.
-I consider this as an interesting point as the design of frontends using a REST API became an industry standard.
+So, in the [src](/src) directory you can find three folders:
 
-I also added a [GraphQL](https://graphql.org/) implementation for those who would like to discover how to design frontends on top of GraphQL APIs.
-
-## Project Structure
-
-The two backends are shipped into a single Java Application, and the two versions of the frontend into a single application too. To know more about this, read the README of each one: [frontend](/frontend) and [backend](/backend).
-
-If you're not familiar with this, the frontend and backend terms refers to the architecture used. These terms have been explained [here](https://www.geeksforgeeks.org/frontend-vs-backend/).
+- [functional](/src/react-functional) that contains the implementation of the view with React hooks and functional components
+- [imperative](/src/react-imperative) that uses the implementation of the view with React classes
+- [commons](/src/commons) that contains all the code that is common to both version, which includes controllers and models
 
 ## Prerequisites
 
@@ -23,27 +17,79 @@ You need to have:
 - A Java Development Kit (JDK) version 11 or later
 - [Node JS](https://nodejs.org/en/)
 
-## How to install?
+## How to use and configure
 
-Open a terminal, go to the folder where you want to save this project and then type:
+You can configure this frontend application in the [src/config.js](/src/config.js) file. Options are:
 
-```sh
-git clone https://github.com/AntoineCheron/todomvc.git
-cd todomvc
+First, you can configure whether to use the imperative or functional version by setting the `featureToggle.app` variable.
 
-cd frontend
-npm install
-```
+Second, you can choose how to persist the data. The first option is `in-memory` which stores the todos in the local storage of the browser. If you choose this option, you won't have to use any the backend proposed in this repository. The two other options are `rest-api` and `graphql`. Their name is explicit, they require to configure the base url of the service. An example is already given in the config file.
 
-## How to run?
+When you're all set with the configuration, use the scripts below to start the app. The easiest way to get started is to set `featureToggle.persistence` to `in-memory` and start the app locally typing `yarn start` in the terminal.
 
-- Frontend: see the [README of the frontend directory](/frontend).
-- Backend: see the [README of the backend directory](/backend).
+## Available Scripts
 
-## Contributing
+In the project directory, you can run:
 
-Simply [open an issue](https://github.com/AntoineCheron/todomvc/issues/new/choose) to get in touch and propose your contribution.
+### `yarn start`
 
-## License
+Runs the app in the development mode.<br />
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The [license of this project](./LICENSE.txt) is MIT. It lets people do almost anything they want with this project, like making and distributing closed source versions.
+The page will reload if you make edits.<br />
+You will also see any lint errors in the console.
+
+### `yarn test`
+
+Launches the test runner in the interactive watch mode.<br />
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+
+### `yarn build`
+
+Builds the app for production to the `build` folder.<br />
+It correctly bundles React in production mode and optimizes the build for the best performance.
+
+The build is minified and the filenames include the hashes.<br />
+Your app is ready to be deployed!
+
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+### `yarn eject`
+
+**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+
+If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+
+You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+
+## Learn More
+
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+
+To learn React, check out the [React documentation](https://reactjs.org/).
+
+### Code Splitting
+
+This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+
+### Analyzing the Bundle Size
+
+This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+
+### Making a Progressive Web App
+
+This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+
+### Advanced Configuration
+
+This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+
+### Deployment
+
+This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+
+### `yarn build` fails to minify
+
+This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
