@@ -1127,6 +1127,16 @@
   resolved "https://registry.yarnpkg.com/@csstools/normalize.css/-/normalize.css-10.1.0.tgz#f0950bba18819512d42f7197e56c518aa491cf18"
   integrity sha512-ij4wRiunFfaJxjB0BdrYHIH8FxBJpOwNPhhAcunlmPdXudL1WQV1qoP9un6JsEBAgQH+7UXyyjh0g7jTxXK6tg==
 
+"@evolvable-by-design/pivo@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@evolvable-by-design/pivo/-/pivo-0.0.2.tgz#f5d588227c89ccb8a65710d7206f9a995e736cd7"
+  integrity sha512-+azBiJpOi/RA1to871djKvwyUymKnsqNJkw20h+P1G7lO/hZDgEo1DK8c7Uedy4G82UgCW8nSJ2aalWm4jP38w==
+
+"@evolvable-by-design/react-pivo@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@evolvable-by-design/react-pivo/-/react-pivo-0.0.2.tgz#b15c06fbbad69528e8e4b8417a2dcc84205dcf55"
+  integrity sha512-ebqbxTDXvg3DqFKtp40SrG4M2DTWh620iQak6HrGJWzs5Hun4uyDWQzie8/cWA991IAisvi84Q2rZvOwYzlvxA==
+
 "@hapi/address@2.x.x":
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/@hapi/address/-/address-2.1.4.tgz#5d67ed43f3fd41a69d4b9ff7b56e7c0d1d0a81e5"

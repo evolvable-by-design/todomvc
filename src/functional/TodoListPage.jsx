@@ -1,45 +1,48 @@
-import React, { useMemo, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import * as Config from '../config'
 import TodoList from './TodoList'
-import TodoService from '../commons/TodoService'
+import TodoServicePivo from '../commons/TodoServicePivo'
 
-export default function TodoListPage () {
-  const [todoService] = useState(new TodoService(Config.restApi.url))
+export default function TodoListPageInit () {
+  const [todoService, setTodoService] = useState()
 
+  useEffect(() => {
+    TodoServicePivo.forApiAtUrl(Config.restApi.url).then(setTodoService)
+  }, [])
+
+  if (todoService) {
+    return <TodoListPage todoService={todoService} />
+  } else {
+    return <p>Loading...</p>
+  }
+}
+
+function TodoListPage ({ todoService }) {
   const [todos, setTodos] = useState(todoService.getTodos())
   const { filter } = useParams()
 
-  const todosToDisplay = useMemo(() => todos.withStatus(filter), [
-    todos,
-    filter
-  ])
-
   useEffect(() => {
-    todoService.fetch().then(setTodos)
-  }, [])
+    todoService.fetch(filter).then(setTodos)
+  }, [filter, todoService])
 
   const createTodo = title =>
     todoService.add(title).then(({ allTodos }) => setTodos(allTodos))
-  const deleteTodo = id => todoService.delete(id).then(setTodos)
+  const deleteTodo = todo => todoService.delete(todo).then(setTodos)
   const clearCompletedTodos = () =>
     todoService.deleteMany('completed').then(setTodos)
   const switchStatusOfAllTodos = () =>
     todoService.switchStatusOfAllTodos().then(setTodos)
   const updateTodoTitle = (todo, newTitle) => {
-    const newValue = todo.updateTitle(newTitle)
-    todoService.updateTodo(newValue).then(setTodos)
+    todoService.updateTodoTitle(todo, newTitle).then(setTodos)
   }
-  const switchTodoCompletedStatus = todo => {
-    const newValue =
-      todo.completed === true ? todo.uncomplete() : todo.complete()
-    todoService.updateTodo(newValue).then(setTodos)
-  }
+  const switchTodoCompletedStatus = todo =>
+    todoService.switchTodoCompletedStatus(todo).then(setTodos)
 
   return (
     <TodoList
-      todos={todosToDisplay}
+      todos={todos}
       createTodo={createTodo}
       deleteTodo={deleteTodo}
       clearCompletedTodos={clearCompletedTodos}

@@ -5,7 +5,7 @@ export default function WhenClickOutside ({ children, callback }) {
 
   const handleClickOutside = useCallback(
     event => {
-      if (wrapperRef && wrapperRef.contains(event.target)) {
+      if (wrapperRef && !wrapperRef.current.contains(event.target)) {
         callback(event)
       }
     },
