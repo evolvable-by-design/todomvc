@@ -1,4 +1,4 @@
-import { guid } from '../utils'
+import { guid } from './utils'
 
 /* 
   Strong design decision: the data model is immutable. 

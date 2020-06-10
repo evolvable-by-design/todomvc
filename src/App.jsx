@@ -4,10 +4,10 @@ import 'todomvc-app-css/index.css'
 
 import * as Config from './config'
 import FooterImperative from './imperative/Footer'
-import TodoListComponentImperative from './imperative/TodoList'
+import TodoListPageImperative from './imperative/TodoListPage'
 
 import FooterFunctional from './functional/Footer'
-import TodoListComponentFunctional from './functional/TodoList'
+import TodoListPageFunctional from './functional/TodoListPage'
 
 export default function App () {
   if (Config.featureToggle.app === 'imperative') {
@@ -22,7 +22,7 @@ function ImperativeApp () {
     <div className='app'>
       <div className='todoapp'>
         <BrowserRouter>
-          <Route path='/:filter?' component={TodoListComponentImperative} />
+          <Route path='/:filter?' component={TodoListPageImperative} />
         </BrowserRouter>
       </div>
 
@@ -36,7 +36,7 @@ function FunctionalApp () {
     <div className='app'>
       <div className='todoapp'>
         <BrowserRouter>
-          <Route path='/:filter?' component={TodoListComponentFunctional} />
+          <Route path='/:filter?' component={TodoListPageFunctional} />
         </BrowserRouter>
       </div>
 
