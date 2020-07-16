@@ -3,13 +3,13 @@ import { useParams } from 'react-router-dom'
 
 import * as Config from '../config'
 import TodoList from './TodoList'
-import TodoServicePivo from '../commons/TodoServicePivo'
+import TodoService from '../commons/TodoService'
 
 export default function TodoListPageInit () {
   const [todoService, setTodoService] = useState()
 
   useEffect(() => {
-    TodoServicePivo.forApiAtUrl(Config.restApi.url).then(setTodoService)
+    TodoService.forApiAtUrl(Config.restApi.url).then(setTodoService)
   }, [])
 
   if (todoService) {

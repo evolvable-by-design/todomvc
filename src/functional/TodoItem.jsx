@@ -7,6 +7,7 @@ import WhenClickOutside from './WhenClickOutside'
 
 // props: { todo, onDone, onDelete, onChange }
 export default function TodoItem (props) {
+  const { onDone, onDelete, onChange } = props
   const [todo, setTodo] = useState(props.todo)
   const [isEditing, setEditing] = useState(false)
   const [editedTitle, setEditedTitle] = useState()
@@ -19,6 +20,13 @@ export default function TodoItem (props) {
     props.todo.getOneValue(AppDictionary.TITLE).then(setEditedTitle)
   }, [props.todo])
 
+  const onSave = useCallback(() => {
+    if (editedTitle !== '') {
+      setEditing(false)
+      onChange(editedTitle)
+    }
+  }, [editedTitle, setEditing, onChange])
+
   const onEnter = useCallback(
     event =>
       onEnterUtils(event, () => {
@@ -26,21 +34,13 @@ export default function TodoItem (props) {
           onSave()
         }
       }),
-    [editedTitle, setEditing]
+    [editedTitle, onSave]
   )
-
-  const onSave = useCallback(() => {
-    if (editedTitle !== '') {
-      setEditing(false)
-      props.onChange(editedTitle)
-    }
-  }, [editedTitle, setEditing])
 
   return (
     <WithSemanticDataRequired
       data={todo}
       mappings={{
-        id: AppDictionary.TODO_ID,
         title: AppDictionary.TITLE,
         completed: AppDictionary.COMPLETED
       }}
@@ -57,14 +57,11 @@ export default function TodoItem (props) {
               type='checkbox'
               className='toggle'
               checked={completed}
-              onChange={event => props.onDone(event)}
+              onChange={event => onDone(event)}
               autoFocus={true}
             />
             <label>{title}</label>
-            <button
-              className='destroy'
-              onClick={event => props.onDelete(event)}
-            />
+            <button className='destroy' onClick={event => onDelete(event)} />
           </div>
           {isEditing && (
             <WhenClickOutside callback={onSave}>

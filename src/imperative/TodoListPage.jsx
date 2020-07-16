@@ -4,55 +4,76 @@ import * as Config from '../config'
 import TodoList from './TodoList'
 import TodoService from '../commons/TodoService'
 
-export default class TodoListPage extends React.Component {
-  constructor (props) {
-    super(props)
-
-    this.todoController = new TodoService(Config.restApi.url)
-    this.state = this.getInitialState(props)
+export default class TodoListPageInit extends React.Component {
+  state = {
+    todoService: undefined
   }
 
   componentDidMount () {
-    this.todoController.fetch().then(todos => this.updateTodos(todos))
+    TodoService.forApiAtUrl(Config.restApi.url).then(todoService =>
+      this.setState({ todoService })
+    )
+  }
+
+  render () {
+    const { todoService } = this.state
+
+    if (todoService !== undefined) {
+      return <TodoListPage todoService={todoService} {...this.props} />
+    } else {
+      return <p>Loading...</p>
+    }
+  }
+}
+
+class TodoListPage extends React.Component {
+  state = { todos: [] }
+
+  componentDidMount () {
+    this.props.todoService
+      .fetch(this.getFilter())
+      .then(todos => this.updateTodos(todos))
   }
 
   componentDidUpdate (prevProps) {
-    if (this.props.match.params.filter !== prevProps.match.params.filter) {
-      this.setState({ ...this.state, filter: this.props.match.params.filter })
+    if (this.getFilter() !== TodoListPage.getFilter(prevProps)) {
+      this.props.todoService
+        .fetch(this.getFilter())
+        .then(todos => this.setState({ ...this.state, todos }))
     }
   }
 
-  getInitialState (props) {
+  static getDerivedStateFromProps (props) {
     return {
-      todos: this.todoController.getTodos(),
-      filter: props.match.params.filter
+      todos: props.todoService.getTodos()
     }
   }
 
-  getTodosToDisplay () {
-    return this.state.todos.withStatus(this.state.filter)
+  static getFilter (props) {
+    return props.match.params.filter
+  }
+
+  getFilter () {
+    return TodoListPage.getFilter(this.props)
   }
 
   async createTodo (title) {
-    const { allTodos } = await this.todoController.add(title)
+    const { allTodos } = await this.props.todoService.add(title)
     this.updateTodos(allTodos)
   }
 
   async updateTodoTitle (todo, newTitle) {
-    const newValue = todo.updateTitle(newTitle)
-    const todos = await this.todoController.updateTodo(newValue)
+    const todos = await this.props.todoService.updateTodoTitle(todo, newTitle)
     this.updateTodos(todos)
   }
 
   async switchTodoCompletedStatus (todo) {
-    const newValue =
-      todo.completed === true ? todo.uncomplete() : todo.complete()
-    const todos = await this.todoController.updateTodo(newValue)
+    const todos = await this.props.todoService.switchTodoCompletedStatus(todo)
     this.updateTodos(todos)
   }
 
-  async deleteTodo (id) {
-    const todos = await this.todoController.delete(id)
+  async deleteTodo (todo) {
+    const todos = await this.props.todoService.delete(todo)
     this.updateTodos(todos)
   }
 
@@ -61,21 +82,21 @@ export default class TodoListPage extends React.Component {
   }
 
   async clearCompletedTodos () {
-    const newTodos = await this.todoController.deleteMany('completed')
+    const newTodos = await this.props.todoService.deleteMany('completed')
     this.updateTodos(newTodos)
   }
 
   async switchStatusOfAllTodos () {
-    const todos = await this.todoController.switchStatusOfAllTodos()
+    const todos = await this.props.todoService.switchStatusOfAllTodos()
     this.updateTodos(todos)
   }
 
   render () {
     return (
       <TodoList
-        todos={this.getTodosToDisplay()}
+        todos={this.state.todos}
         createTodo={title => this.createTodo(title)}
-        deleteTodo={id => this.deleteTodo(id)}
+        deleteTodo={todo => this.deleteTodo(todo)}
         clearCompletedTodos={() => this.clearCompletedTodos()}
         switchStatusOfAllTodos={() => this.switchStatusOfAllTodos()}
         updateTodoTitle={(todo, newTitle) =>

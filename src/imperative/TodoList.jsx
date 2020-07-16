@@ -1,11 +1,23 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
+import WithSemanticDataRequired from '../imports/with-semantic-data-required'
 
-import TodoList from '../commons/TodoList'
+import * as AppDictionary from '../commons/Vocab'
+import TodoList from '../commons/TodoListPivo'
 import TodoInput from './TodoInput'
 import TodoItem from './TodoItem'
 
 export default class TodoListComponent extends React.Component {
+  state = { left: -1 }
+
+  componentDidUpdate (prevProps) {
+    if (this.props.todos !== prevProps.todos) {
+      TodoList.countTodosLeft(this.props.todos).then(left =>
+        this.setState({ ...this.state, left })
+      )
+    }
+  }
+
   render () {
     const {
       todos,
@@ -17,9 +29,9 @@ export default class TodoListComponent extends React.Component {
       switchTodoCompletedStatus
     } = this.props
 
-    const left = TodoList.countTodosLeft(todos)
+    const { left } = this.state
     const isAnyDone = left < todos.length
-    const areAllDone = left === todos.length
+    const areAllDone = todos.length
 
     return (
       <React.Fragment>
@@ -38,15 +50,23 @@ export default class TodoListComponent extends React.Component {
           />
           <label htmlFor='toggle-all' />
           <ul className='todo-list'>
-            {todos.map(todo => {
+            {todos.map((todo, index) => {
               return (
-                <TodoItem
-                  key={todo.id}
-                  todo={todo}
-                  onChange={newTitle => updateTodoTitle(todo, newTitle)}
-                  onDelete={() => deleteTodo(todo.id)}
-                  onDone={() => switchTodoCompletedStatus(todo)}
-                />
+                <WithSemanticDataRequired
+                  data={todo}
+                  key={index}
+                  mappings={{ id: AppDictionary.TODO_ID }}
+                >
+                  {({ id }) => (
+                    <TodoItem
+                      key={id}
+                      todo={todo}
+                      onChange={newTitle => updateTodoTitle(todo, newTitle)}
+                      onDelete={() => deleteTodo(todo)}
+                      onDone={() => switchTodoCompletedStatus(todo)}
+                    />
+                  )}
+                </WithSemanticDataRequired>
               )
             })}
           </ul>
